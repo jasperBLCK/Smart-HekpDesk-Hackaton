@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project - API Frontend</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <script src="/static/js/api.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🦇 Project API для Академии АХО</h1>
+            <p>Простой фронтенд для управления API</p>
+        </header>
+
+        <nav class="api-nav">
+            <div class="nav-grid">
+                <a href="/auth" class="nav-card">
+                    <div class="nav-icon">🔐</div>
+                    <h3>Аутентификация</h3>
+                    <p>Регистрация и вход в систему</p>
+                    <ul>
+                        <li>POST /auth/register</li>
+                        <li>POST /auth/login</li>
+                        <li>POST /auth/logout</li>
+                    </ul>
+                </a>
+
+                <a href="/users" class="nav-card">
+                    <div class="nav-icon">👥</div>
+                    <h3>Пользователи</h3>
+                    <p>Управление пользователями</p>
+                    <ul>
+                        <li>POST /api/users</li>
+                        <li>GET /api/users</li>
+                        <li>GET /api/users/{id}</li>
+                        <li>PUT /api/users/{id}</li>
+                    </ul>
+                </a>
+
+                <a href="/tasks" class="nav-card">
+                    <div class="nav-icon">📋</div>
+                    <h3>Задачи</h3>
+                    <p>Система управления задачами</p>
+                    <ul>
+                        <li>POST /api/tasks</li>
+                        <li>GET /api/tasks</li>
+                        <li>GET /api/tasks/{id}</li>
+                        <li>PUT /api/tasks/{id}</li>
+                        <li>DELETE /api/tasks/{id}</li>
+                        <li>PATCH /api/tasks/{id}/status</li>
+                        <li>PATCH /api/tasks/{id}/assign</li>
+                    </ul>
+                </a>
+            </div>
+        </nav>
+
+        <footer>
+            <p>Простой фронтенд для Project API</p>
+            <p>Убедитесь, что ваш FastAPI сервер запущен на <code>http://localhost:8000</code> из папки batman_project/</p>
+        </footer>
+    </div>
+</body>
+</html>

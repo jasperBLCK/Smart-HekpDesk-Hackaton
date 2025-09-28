@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пользователи - Project</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <script src="/static/js/api.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="page-nav">
+            <a href="/">🏠 Главная</a>
+            <a href="/auth">🔐 Аутентификация</a>
+            <a href="/tasks">📋 Задачи</a>
+        </div>
+
+        <header>
+            <h1>👥 Управление пользователями</h1>
+            <p>Создание, просмотр и редактирование пользователей</p>
+        </header>
+
+        <!-- создание пользователя -->
+        <div class="form-container">
+            <h2>Создать нового пользователя</h2>
+            <form id="createUserForm">
+                <div class="form-group">
+                    <label for="userId">ID пользователя:</label>
+                    <input type="text" id="userId" name="id" required 
+                           placeholder="Введите уникальный ID">
+                </div>
+                <div class="form-group">
+                    <label for="username">Имя пользователя:</label>
+                    <input type="text" id="username" name="username" required 
+                           placeholder="Введите имя пользователя">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required 
+                           placeholder="Введите email">
+                </div>
+                <div class="form-group">
+                    <label for="fullName">Полное имя:</label>
+                    <input type="text" id="fullName" name="full_name" required 
+                           placeholder="Введите полное имя">
+                </div>
+                <div class="form-group">
+                    <label for="phone">Телефон:</label>
+                    <input type="tel" id="phone" name="phone" required 
+                           placeholder="Введите номер телефона">
+                </div>
+                <div class="form-group">
+                    <label for="role">Роль:</label>
+                    <select id="role" name="role" required>
+                        <option value="">Выберите роль</option>
+                        <option value="Руководитель отдела">Руководитель отдела</option>
+                        <option value="Сервис-менеджер">Сервис-менеджер</option>
+                        <option value="Электрик">Электрик</option>
+                        <option value="Энергетик">Энергетик</option>
+                        <option value="Специалист по отоплению">Специалист по отоплению</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="department">Отдел:</label>
+                    <input type="text" id="department" name="department" required 
+                           placeholder="Введите отдел">
+                </div>
+                <div class="form-group">
+                    <label for="telegramChatId">Telegram Chat ID (необязательно):</label>
+                    <input type="text" id="telegramChatId" name="telegram_chat_id" 
+                           placeholder="Введите Telegram Chat ID">
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="isActive" name="is_active" checked> 
+                        Активный пользователь
+                    </label>
+                </div>
+                <button type="submit" class="btn">Создать пользователя</button>
+            </form>
+            <div id="createUserResult"></div>
+        </div>
+
+        <!-- получение пользователя -->
+        <div class="form-container">
+            <h2>Получить пользователя по ID</h2>
+            <form id="getUserForm">
+                <div class="form-group">
+                    <label for="getUserId">ID пользователя:</label>
+                    <input type="text" id="getUserId" name="id" required 
+                           placeholder="Введите ID пользователя">
+                </div>
+                <button type="submit" class="btn">Получить пользователя</button>
+            </form>
+            <div id="getUserResult"></div>
+        </div>
+
+        <!-- обновление пользователя -->
+        <div class="form-container">
+            <h2>Обновить пользователя</h2>
+            <form id="updateUserForm">
+                <div class="form-group">
+                    <label for="updateUserId">ID пользователя:</label>
+                    <input type="text" id="updateUserId" name="id" required 
+                           placeholder="Введите ID пользователя">
+                </div>
+                <div class="form-group">
+                    <label for="updateUsername">Имя пользователя:</label>
+                    <input type="text" id="updateUsername" name="username" 
+                           placeholder="Введите новое имя пользователя">
+                </div>
+                <div class="form-group">
+                    <label for="updateEmail">Email:</label>
+                    <input type="email" id="updateEmail" name="email" 
+                           placeholder="Введите новый email">
+                </div>
+                <div class="form-group">
+                    <label for="updateFullName">Полное имя:</label>
+                    <input type="text" id="updateFullName" name="full_name" 
+                           placeholder="Введите новое полное имя">
+                </div>
+                <div class="form-group">
+                    <label for="updateRole">Роль:</label>
+                    <select id="updateRole" name="role">
+                        <option value="">Выберите новую роль</option>
+                        <option value="Руководитель отдела">Руководитель отдела</option>
+                        <option value="Сервис-менеджер">Сервис-менеджер</option>
+                        <option value="Электрик">Электрик</option>
+                        <option value="Энергетик">Энергетик</option>
+                        <option value="Специалист по отоплению">Специалист по отоплению</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="updateDepartment">Отдел:</label>
+                    <input type="text" id="updateDepartment" name="department" 
+                           placeholder="Введите новый отдел">
+                </div>
+                <div class="form-group">
+                    <label for="updateTelegramChatId">Telegram Chat ID:</label>
+                    <input type="text" id="updateTelegramChatId" name="telegram_chat_id" 
+                           placeholder="Введите новый Telegram Chat ID">
+                </div>
+                <button type="submit" class="btn">Обновить пользователя</button>
+            </form>
+            <div id="updateUserResult"></div>
+        </div>
+
+        <!-- список пользователей -->
+        <div class="table-container">
+            <h2>Список всех пользователей</h2>
+            <div class="btn-group">
+                <button onclick="loadAllUsers()" class="btn">Загрузить всех пользователей</button>
+            </div>
+            <div id="allUsersResult"></div>
+        </div>
+
+        <!-- API -->
+        <div class="table-container">
+            <h2>📚 API Endpoints</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Метод</th>
+                        <th>Endpoint</th>
+                        <th>Описание</th>
+                        <th>Параметры</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span style="color: #28a745; font-weight: bold;">POST</span></td>
+                        <td>/api/users</td>
+                        <td>Создание нового пользователя</td>
+                        <td>id, username, email, full_name, phone, role, department, telegram_chat_id, is_active</td>
+                    </tr>
+                    <tr>
+                        <td><span style="color: #007bff; font-weight: bold;">GET</span></td>
+                        <td>/api/users</td>
+                        <td>Получение списка всех пользователей</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td><span style="color: #007bff; font-weight: bold;">GET</span></td>
+                        <td>/api/users/{id}</td>
+                        <td>Получение пользователя по ID</td>
+                        <td>id (в URL)</td>
+                    </tr>
+                    <tr>
+                        <td><span style="color: #ffc107; font-weight: bold;">PUT</span></td>
+                        <td>/api/users/{id}</td>
+                        <td>Обновление пользователя</td>
+                        <td>id (в URL), username, email, full_name, role, department, telegram_chat_id</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // создание пользователя
+        document.getElementById('createUserForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const submitButton = e.target.querySelector('button[type="submit"]');
+            
+            const data = {
+                id: formData.get('id'),
+                username: formData.get('username'),
+                email: formData.get('email'),
+                full_name: formData.get('full_name'),
+                phone: formData.get('phone'),
+                role: formData.get('role'),
+                department: formData.get('department'),
+                telegram_chat_id: formData.get('telegram_chat_id') || null,
+                is_active: formData.get('is_active') === 'on'
+            };
+
+            FormUtils.showLoading(submitButton, 'Создание...');
+            
+            const result = await api.createUser(data);
+            
+            FormUtils.hideLoading(submitButton);
+            
+            if (result.success) {
+                notifications.show('Пользователь создан успешно!', 'success');
+                showResult('createUserResult', result.data, 'success');
+                e.target.reset();
+            } else {
+                const errorMsg = result.data.detail || result.data.error || 'Ошибка при создании пользователя';
+                notifications.show(errorMsg, 'error');
+                showResult('createUserResult', result.data, 'error');
+            }
+        });
+
+        // получение пользователя
+        document.getElementById('getUserForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const userId = document.getElementById('getUserId').value;
+            const submitButton = e.target.querySelector('button[type="submit"]');
+
+            FormUtils.showLoading(submitButton, 'Поиск...');
+            
+            const result = await api.getUser(userId);
+            
+            FormUtils.hideLoading(submitButton);
+            
+            if (result.success) {
+                notifications.show('Пользователь найден!', 'success');
+                showResult('getUserResult', result.data, 'success');
+            } else {
+                const errorMsg = result.data.detail || result.data.error || 'Пользователь не найден';
+                notifications.show(errorMsg, 'error');
+                showResult('getUserResult', result.data, 'error');
+            }
+        });
+
+        // обновление пользователя
+        document.getElementById('updateUserForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const submitButton = e.target.querySelector('button[type="submit"]');
+            const userId = formData.get('id');
+            
+            const data = {};
+            if (formData.get('username') && formData.get('username').trim()) {
+                data.username = formData.get('username').trim();
+            }
+            if (formData.get('email') && formData.get('email').trim()) {
+                data.email = formData.get('email').trim();
+            }
+            if (formData.get('full_name') && formData.get('full_name').trim()) {
+                data.full_name = formData.get('full_name').trim();
+            }
+            if (formData.get('role') && formData.get('role').trim()) {
+                data.role = formData.get('role').trim();
+            }
+            if (formData.get('department') && formData.get('department').trim()) {
+                data.department = formData.get('department').trim();
+            }
+            if (formData.get('telegram_chat_id') && formData.get('telegram_chat_id').trim()) {
+                data.telegram_chat_id = formData.get('telegram_chat_id').trim();
+            }
+
+            FormUtils.showLoading(submitButton, 'Обновление...');
+            
+            const result = await api.updateUser(userId, data);
+            
+            FormUtils.hideLoading(submitButton);
+            
+            if (result.success) {
+                notifications.show('Пользователь обновлен успешно!', 'success');
+                showResult('updateUserResult', result.data, 'success');
+            } else {
+                let errorMsg = 'Ошибка при обновлении пользователя';
+                if (result.data.detail) {
+                    if (Array.isArray(result.data.detail)) {
+                        errorMsg = result.data.detail.map(err => err.msg || err).join(', ');
+                    } else {
+                        errorMsg = result.data.detail;
+                    }
+                } else if (result.data.error) {
+                    errorMsg = result.data.error;
+                }
+                notifications.show(errorMsg, 'error');
+                showResult('updateUserResult', result.data, 'error');
+            }
+        });
+
+        // загрузка пользователей
+        async function loadAllUsers() {
+            const button = document.querySelector('button[onclick="loadAllUsers()"]');
+            FormUtils.showLoading(button, 'Загрузка...');
+            
+            const result = await api.getUsers();
+            
+            FormUtils.hideLoading(button);
+            
+            if (result.success) {
+                notifications.show(`Загружено ${result.data.length} пользователей`, 'success');
+                displayUsersTable(result.data);
+            } else {
+                const errorMsg = result.data.detail || result.data.error || 'Ошибка при загрузке пользователей';
+                notifications.show(errorMsg, 'error');
+                showResult('allUsersResult', result.data, 'error');
+            }
+        }
+
+        // отображение таблицы
+        function displayUsersTable(users) {
+            const container = document.getElementById('allUsersResult');
+            
+            if (users.length === 0) {
+                container.innerHTML = '<div class="result">Пользователи не найдены</div>';
+                return;
+            }
+
+            let tableHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Имя пользователя</th>
+                            <th>Полное имя</th>
+                            <th>Email</th>
+                            <th>Телефон</th>
+                            <th>Роль</th>
+                            <th>Отдел</th>
+                            <th>Telegram</th>
+                            <th>Активен</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            users.forEach(user => {
+                tableHTML += `
+                    <tr>
+                        <td>${user.id || 'N/A'}</td>
+                        <td>${user.username || 'N/A'}</td>
+                        <td>${user.full_name || 'N/A'}</td>
+                        <td>${user.email || 'N/A'}</td>
+                        <td>${user.phone || 'N/A'}</td>
+                        <td>${user.role || 'N/A'}</td>
+                        <td>${user.department || 'N/A'}</td>
+                        <td>${user.telegram_chat_id || 'N/A'}</td>
+                        <td>${user.is_active ? '✅' : '❌'}</td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += '</tbody></table>';
+            container.innerHTML = tableHTML;
+        }
+
+        // показать результат
+        function showResult(elementId, data, type) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `
+                <div class="result ${type}">
+                    <h4>${type === 'success' ? '✅ Успешно!' : '❌ Ошибка'}</h4>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
