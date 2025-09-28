@@ -107,8 +107,8 @@ stop.bat
 
 Создать файл `.env`:
 ```bash
-DATABASE_URL=postgresql+psycopg2://postgres:ansar09595@localhost:5432/HelpDesk
-JWT_SECRET_KEY=your-secure-secret-key
+DATABASE_URL=postgresql+psycopg2://postgres:password@localhost:5432/HelpDesk
+JWT_SECRET_KEY=-----
 ```
 
 ## Структура проекта
