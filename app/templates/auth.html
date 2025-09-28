@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Аутентификация - Project</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <script src="/static/js/api.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="page-nav">
+            <a href="/">🏠 Главная</a>
+            <a href="/users">👥 Пользователи</a>
+            <a href="/tasks">📋 Задачи</a>
+        </div>
+
+        <header>
+            <h1>🔐 Аутентификация</h1>
+            <p>Регистрация и вход в систему</p>
+        </header>
+
+        <!-- регистрация -->
+        <div class="form-container">
+            <h2>Регистрация нового пользователя</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="regLogin">Логин:</label>
+                    <input type="text" id="regLogin" name="login" required minlength="3" maxlength="25" 
+                           placeholder="Введите логин (3-25 символов)">
+                </div>
+                <div class="form-group">
+                    <label for="regEmail">Email:</label>
+                    <input type="email" id="regEmail" name="email" required maxlength="100" 
+                           placeholder="Введите email">
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Пароль:</label>
+                    <input type="password" id="regPassword" name="password" required minlength="8" maxlength="128" 
+                           placeholder="Введите пароль (8-128 символов)">
+                    <small style="color: #666; font-size: 0.9em;">
+                        Запрещены символы: ! " # $ % & ' ( ) * + , - / : ; < = > ? @ [ \ ] ^ { | } ~
+                    </small>
+                </div>
+                <button type="submit" class="btn">Зарегистрироваться</button>
+            </form>
+            <div id="registerResult"></div>
+        </div>
+
+        <!-- вход -->
+        <div class="form-container">
+            <h2>Вход в систему</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginLogin">Логин:</label>
+                    <input type="text" id="loginLogin" name="login" required minlength="3" maxlength="25" 
+                           placeholder="Введите логин">
+                </div>
+                <div class="form-group">
+                    <label for="loginEmail">Email:</label>
+                    <input type="email" id="loginEmail" name="email" required maxlength="100" 
+                           placeholder="Введите email">
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Пароль:</label>
+                    <input type="password" id="loginPassword" name="password" required minlength="8" maxlength="128" 
+                           placeholder="Введите пароль">
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn">Войти</button>
+                    <button type="button" class="btn btn-secondary" onclick="logout()">Выйти</button>
+                </div>
+            </form>
+            <div id="loginResult"></div>
+        </div>
+
+        <!-- API -->
+        <div class="table-container">
+            <h2>📚 API Endpoints</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Метод</th>
+                        <th>Endpoint</th>
+                        <th>Описание</th>
+                        <th>Параметры</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span style="color: #28a745; font-weight: bold;">POST</span></td>
+                        <td>/auth/register</td>
+                        <td>Регистрация нового пользователя</td>
+                        <td>login, email, password</td>
+                    </tr>
+                    <tr>
+                        <td><span style="color: #28a745; font-weight: bold;">POST</span></td>
+                        <td>/auth/login</td>
+                        <td>Вход в систему</td>
+                        <td>login, email, password</td>
+                    </tr>
+                    <tr>
+                        <td><span style="color: #28a745; font-weight: bold;">POST</span></td>
+                        <td>/auth/logout</td>
+                        <td>Выход из системы</td>
+                        <td>-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // регистрация
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const submitButton = e.target.querySelector('button[type="submit"]');
+            
+            // валидация
+            const login = formData.get('login');
+            const email = formData.get('email');
+            const password = formData.get('password');
+            
+            if (!FormUtils.validateEmail(email)) {
+                notifications.show('Пожалуйста, введите корректный email адрес', 'error');
+                return;
+            }
+            
+            if (!FormUtils.validatePassword(password)) {
+                notifications.show('Пароль содержит запрещенные символы', 'error');
+                return;
+            }
+            
+            FormUtils.showLoading(submitButton, 'Регистрация...');
+            
+            const result = await api.register(login, email, password);
+            
+            FormUtils.hideLoading(submitButton);
+            
+            if (result.success) {
+                notifications.show('Регистрация прошла успешно!', 'success');
+                showResult('registerResult', result.data, 'success');
+                e.target.reset();
+            } else {
+                const errorMsg = result.data.detail || result.data.error || 'Произошла ошибка при регистрации';
+                notifications.show(errorMsg, 'error');
+                showResult('registerResult', result.data, 'error');
+            }
+        });
+
+        // вход
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const submitButton = e.target.querySelector('button[type="submit"]');
+            
+            const login = formData.get('login');
+            const email = formData.get('email');
+            const password = formData.get('password');
+            
+            if (!FormUtils.validateEmail(email)) {
+                notifications.show('Пожалуйста, введите корректный email адрес', 'error');
+                return;
+            }
+            
+            FormUtils.showLoading(submitButton, 'Вход...');
+            
+            const result = await api.login(login, email, password);
+            
+            FormUtils.hideLoading(submitButton);
+            
+            if (result.success) {
+                notifications.show('Вход выполнен успешно!', 'success');
+                showResult('loginResult', result.data, 'success');
+                e.target.reset();
+            } else {
+                const errorMsg = result.data.detail || result.data.error || 'Ошибка при входе в систему';
+                notifications.show(errorMsg, 'error');
+                showResult('loginResult', result.data, 'error');
+            }
+        });
+
+        // выход
+        async function logout() {
+            const result = await api.logout();
+            
+            if (result.success) {
+                notifications.show('Выход выполнен успешно!', 'success');
+                showResult('loginResult', result.data, 'success');
+            } else {
+                const errorMsg = result.data.detail || result.data.error || 'Ошибка при выходе';
+                notifications.show(errorMsg, 'error');
+                showResult('loginResult', result.data, 'error');
+            }
+        }
+
+        // показать результат
+        function showResult(elementId, data, type) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `
+                <div class="result ${type}">
+                    <h4>${type === 'success' ? '✅ Успешно!' : '❌ Ошибка'}</h4>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>
+            `;
+        }
+
+        // валидация пароля
+        document.getElementById('regPassword').addEventListener('input', function(e) {
+            const password = e.target.value;
+            
+            if (!FormUtils.validatePassword(password)) {
+                e.target.style.borderColor = '#dc3545';
+                e.target.setCustomValidity('Пароль содержит запрещенные символы');
+                notifications.show('Пароль содержит запрещенные символы', 'warning', 3000);
+            } else {
+                e.target.style.borderColor = '#e1e5e9';
+                e.target.setCustomValidity('');
+            }
+        });
+
+        // валидация email
+        document.getElementById('regEmail').addEventListener('blur', function(e) {
+            const email = e.target.value;
+            if (email && !FormUtils.validateEmail(email)) {
+                e.target.style.borderColor = '#dc3545';
+                notifications.show('Некорректный формат email', 'warning', 3000);
+            } else {
+                e.target.style.borderColor = '#e1e5e9';
+            }
+        });
+
+        document.getElementById('loginEmail').addEventListener('blur', function(e) {
+            const email = e.target.value;
+            if (email && !FormUtils.validateEmail(email)) {
+                e.target.style.borderColor = '#dc3545';
+                notifications.show('Некорректный формат email', 'warning', 3000);
+            } else {
+                e.target.style.borderColor = '#e1e5e9';
+            }
+        });
+    </script>
+</body>
+</html>

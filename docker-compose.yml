@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  # База данных
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: HelpDesk
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ***REMOVED***
+    ports:
+      - "5432:5432"
+
+  # Приложение
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+psycopg2://postgres:***REMOVED***@db:5432/HelpDesk
+      JWT_SECRET_KEY: your-secure-secret-key
+    depends_on:
+      - db

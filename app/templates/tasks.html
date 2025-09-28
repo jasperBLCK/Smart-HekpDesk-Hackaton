@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Задачи - Project</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <script src="/static/js/api.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="page-nav">
+            <a href="/">🏠 Главная</a>
+            <a href="/auth">🔐 Аутентификация</a>
+            <a href="/users">👥 Пользователи</a>
+        </div>
+
+        <header>
+            <h1>📋 Управление задачами</h1>
+            <p>Создание, просмотр и управление задачами</p>
+        </header>
+
+        <!-- создание задачи -->
+        <div class="form-container">
+            <h2>Создать новую задачу</h2>
+            <form id="createTaskForm">
+                <div class="form-group">
+                    <label for="taskTitle">Название задачи:</label>
+                    <input type="text" id="taskTitle" name="title" required maxlength="80" 
+                           placeholder="Введите название задачи (до 80 символов)">
+                </div>
+                <div class="form-group">
+                    <label for="taskDescription">Описание:</label>
+                    <textarea id="taskDescription" name="description" maxlength="380" 
+                              placeholder="Введите описание задачи (до 380 символов)"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="taskCategory">Категория:</label>
+                    <input type="text" id="taskCategory" name="category" required maxlength="50" 
+                           placeholder="Введите категорию">
+                </div>
+                <div class="form-group">
+                    <label for="taskStatus">Статус:</label>
+                    <select id="taskStatus" name="status" required>
+                        <option value="">Выберите статус</option>
+                        <option value="Новая">Новая</option>
+                        <option value="В работе">В работе</option>
+                        <option value="Выполнена">Выполнена</option>
+                        <option value="Отменена">Отменена</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="taskPriority">Приоритет:</label>
+                    <select id="taskPriority" name="priority" required>
+                        <option value="">Выберите приоритет</option>
+                        <option value="Critical">Critical</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="taskLocationId">ID локации:</label>
+                    <input type="text" id="taskLocationId" name="location_id" required maxlength="50" 
+                           placeholder="Введите ID локации">
+                </div>
+                <div class="form-group">
+                    <label for="taskCreatedBy">Создатель:</label>
+                    <input type="text" id="taskCreatedBy" name="created_by" required maxlength="50" 
+                           placeholder="Введите ID создателя">
+                </div>
+                <div class="form-group">
+                    <label for="taskAssignedTo">Исполнитель (необязательно):</label>
+                    <input type="text" id="taskAssignedTo" name="assigned_to" maxlength="50" 
+                           placeholder="Введите ID исполнителя">
+                </div>
+                <div class="form-group">
+                    <label for="taskDueDate">Срок выполнения:</label>
+                    <input type="datetime-local" id="taskDueDate" name="due_date">
+                </div>
+                <div class="form-group">
+                    <label for="taskAttachments">Ссылка на файл/видео:</label>
+                    <input type="text" id="taskAttachments" name="attachments" 
+                           placeholder="Введите ссылку на файл или видео">
+                </div>
+                <button type="submit" class="btn">Создать задачу</button>
+            </form>
+            <div id="createTaskResult"></div>
+        </div>
+
+        <!-- получение задачи -->
+        <div class="form-container">
+            <h2>Получить задачу по ID</h2>
+            <form id="getTaskForm">
+                <div class="form-group">
+                    <label for="getTaskId">ID задачи:</label>
+                    <input type="number" id="getTaskId" name="id" required 
+                           placeholder="Введите ID задачи">
+                </div>
+                <button type="submit" class="btn">Получить задачу</button>
+            </form>
+            <div id="getTaskResult"></div>
+        </div>
+
+        <!-- обновление задачи -->
+        <div class="form-container">
+            <h2>Обновить задачу</h2>
+            <form id="updateTaskForm">
+                <div class="form-group">
+                    <label for="updateTaskId">ID задачи:</label>
+                    <input type="number" id="updateTaskId" name="id" required 
+                           placeholder="Введите ID задачи">
+                </div>
+                <div class="form-group">
+                    <label for="updateTaskDescription">Описание:</label>
+                    <textarea id="updateTaskDescription" name="description" maxlength="380" 
+                              placeholder="Введите новое описание"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="updateTaskCategory">Категория:</label>
+                    <input type="text" id="updateTaskCategory" name="category" maxlength="50" 
+                           placeholder="Введите новую категорию">
+                </div>
+                <div class="form-group">
+                    <label for="updateTaskStatus">Статус:</label>
+                    <select id="updateTaskStatus" name="status">
+                        <option value="">Выберите новый статус</option>
+                        <option value="Новая">Новая</option>
+                        <option value="В работе">В работе</option>
+                        <option value="Выполнена">Выполнена</option>
+                        <option value="Отменена">Отменена</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="updateTaskPriority">Приоритет:</label>
+                    <select id="updateTaskPriority" name="priority">
+                        <option value="">Выберите новый приоритет</option>
+                        <option value="Critical">Critical</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="updateTaskAssignedTo">Исполнитель:</label>
+                    <input type="text" id="updateTaskAssignedTo" name="assigned_to" maxlength="50" 
+                           placeholder="Введите ID нового исполнителя">
+                </div>
+                <div class="form-group">
+                    <label for="updateTaskAttachments">Ссылка на файл/видео:</label>
+                    <input type="text" id="updateTaskAttachments" name="attachments" 
+                           placeholder="Введите ссылку на файл или видео">
+                </div>
+                <button type="submit" class="btn">Обновить задачу</button>
+            </form>
+            <div id="updateTaskResult"></div>
+        </div>
+
+        <!-- удаление задачи -->
+        <div class="form-container">
+            <h2>Удалить задачу</h2>
+            <form id="deleteTaskForm">
+                <div class="form-group">
+                    <label for="deleteTaskId">ID задачи:</label>
+                    <input type="number" id="deleteTaskId" name="id" required 
+                           placeholder="Введите ID задачи для удаления">
+                </div>
+                <button type="submit" class="btn btn-danger">Удалить задачу</button>
+            </form>
+            <div id="deleteTaskResult"></div>
+        </div>
+
+        <!-- изменение статуса -->
+        <div class="form-container">
+            <h2>Изменить статус задачи</h2>
+            <form id="patchStatusForm">
+                <div class="form-group">
+                    <label for="patchStatusId">ID задачи:</label>
+                    <input type="number" id="patchStatusId" name="id" required 
+                           placeholder="Введите ID задачи">
+                </div>
+                <div class="form-group">
+                    <label for="patchStatus">Новый статус:</label>
+                    <select id="patchStatus" name="status" required>
+                        <option value="">Выберите статус</option>
+                        <option value="Новая">Новая</option>
+                        <option value="В работе">В работе</option>
+                        <option value="Выполнена">Выполнена</option>
+                        <option value="Отменена">Отменена</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn">Изменить статус</button>
+            </form>
+            <div id="patchStatusResult"></div>
+        </div>
+
+        <!-- назначение исполнителя -->
+        <div class="form-container">
+            <h2>Назначить исполнителя</h2>
+            <form id="patchAssignForm">
+                <div class="form-group">
+                    <label for="patchAssignId">ID задачи:</label>
+                    <input type="number" id="patchAssignId" name="id" required 
+                           placeholder="Введите ID задачи">
+                </div>
+                <div class="form-group">
+                    <label for="patchAssignedTo">ID исполнителя:</label>
+                    <input type="text" id="patchAssignedTo" name="assigned_to" required maxlength="50" 
+                           placeholder="Введите ID исполнителя">
+                </div>
+                <button type="submit" class="btn">Назначить исполнителя</button>
+            </form>
+            <div id="patchAssignResult"></div>
+        </div>
+
+        <!-- список задач -->
+        <div class="table-container">
+            <h2>Список всех задач</h2>
+            <div class="btn-group">
+                <button onclick="loadAllTasks()" class="btn">Загрузить все задачи</button>
+            </div>
+            <div id="allTasksResult"></div>
+        </div>
+
+        <!-- API -->
+        <div class="table-container">
+            <h2>📚 API Endpoints</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Метод</th>
+                        <th>Endpoint</th>
+                        <th>Описание</th>
+                        <th>Параметры</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span style="color: #28a745; font-weight: bold;">POST</span></td>
+                        <td>/api/tasks</td>
+                        <td>Создание новой задачи</td>
+                        <td>title, description, category, status, priority, location_id, created_by, assigned_to, due_date, attachments (ссылка)</td>
+                    </tr>
+                    <tr>
+                        <td><span style="color: #007bff; font-weight: bold;">GET</span></td>
+                        <td>/api/tasks</td>
+                        <td>Получение списка всех задач</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td><span style="color: #007bff; font-weight: bold;">GET</span></td>
+                        <td>/api/tasks/{id}</td>
+                        <td>Получение задачи по ID</td>
+                        <td>id (в URL)</td>
+                    </tr>
+                    <tr>
+                        <td><span style="color: #ffc107; font-weight: bold;">PUT</span></td>
+                        <td>/api/tasks/{id}</td>
+                        <td>Обновление задачи</td>
+                        <td>id (в URL), description, category, status, priority, assigned_to, attachments (ссылка)</td>
+                    </tr>
+                    <tr>
+                        <td><span style="color: #dc3545; font-weight: bold;">DELETE</span></td>
+                        <td>/api/tasks/{id}</td>
+                        <td>Удаление задачи</td>
+                        <td>id (в URL)</td>
+                    </tr>
+                    <tr>
+                        <td><span style="color: #6f42c1; font-weight: bold;">PATCH</span></td>
+                        <td>/api/tasks/{id}/status</td>
+                        <td>Изменение статуса задачи</td>
+                        <td>id (в URL), status</td>
+                    </tr>
+                    <tr>
+                        <td><span style="color: #6f42c1; font-weight: bold;">PATCH</span></td>
+                        <td>/api/tasks/{id}/assign</td>
+                        <td>Назначение исполнителя</td>
+                        <td>id (в URL), assigned_to</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // создание задачи
+        document.getElementById('createTaskForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const submitButton = e.target.querySelector('button[type="submit"]');
+            
+            const data = {
+                title: formData.get('title'),
+                description: formData.get('description') || null,
+                category: formData.get('category'),
+                status: formData.get('status'),
+                priority: formData.get('priority'),
+                location_id: formData.get('location_id'),
+                created_by: formData.get('created_by'),
+                assigned_to: formData.get('assigned_to') || null,
+                due_date: formData.get('due_date') || null,
+                attachments: formData.get('attachments') || null
+            };
+
+            FormUtils.showLoading(submitButton, 'Создание...');
+            
+            const result = await api.createTask(data);
+            
+            FormUtils.hideLoading(submitButton);
+            
+            if (result.success) {
+                notifications.show('Задача создана успешно!', 'success');
+                showResult('createTaskResult', result.data, 'success');
+                e.target.reset();
+            } else {
+                const errorMsg = result.data.detail || result.data.error || 'Ошибка при создании задачи';
+                notifications.show(errorMsg, 'error');
+                showResult('createTaskResult', result.data, 'error');
+            }
+        });
+
+        // получение задачи
+        document.getElementById('getTaskForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const taskId = document.getElementById('getTaskId').value;
+            const submitButton = e.target.querySelector('button[type="submit"]');
+
+            FormUtils.showLoading(submitButton, 'Поиск...');
+            
+            const result = await api.getTask(taskId);
+            
+            FormUtils.hideLoading(submitButton);
+            
+            if (result.success) {
+                notifications.show('Задача найдена!', 'success');
+                showResult('getTaskResult', result.data, 'success');
+            } else {
+                const errorMsg = result.data.detail || result.data.error || 'Задача не найдена';
+                notifications.show(errorMsg, 'error');
+                showResult('getTaskResult', result.data, 'error');
+            }
+        });
+
+        // обновление задачи
+        document.getElementById('updateTaskForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const submitButton = e.target.querySelector('button[type="submit"]');
+            const taskId = formData.get('id');
+            
+            const data = {};
+            if (formData.get('description') && formData.get('description').trim()) {
+                data.description = formData.get('description').trim();
+            }
+            if (formData.get('category') && formData.get('category').trim()) {
+                data.category = formData.get('category').trim();
+            }
+            if (formData.get('status') && formData.get('status').trim()) {
+                data.status = formData.get('status').trim();
+            }
+            if (formData.get('priority') && formData.get('priority').trim()) {
+                data.priority = formData.get('priority').trim();
+            }
+            if (formData.get('assigned_to') && formData.get('assigned_to').trim()) {
+                data.assigned_to = formData.get('assigned_to').trim();
+            }
+            if (formData.get('attachments') && formData.get('attachments').trim()) {
+                data.attachments = formData.get('attachments').trim();
+            }
+
+            FormUtils.showLoading(submitButton, 'Обновление...');
+            
+            const result = await api.updateTask(taskId, data);
+            
+            FormUtils.hideLoading(submitButton);
+            
+            if (result.success) {
+                notifications.show('Задача обновлена успешно!', 'success');
+                showResult('updateTaskResult', result.data, 'success');
+            } else {
+                const errorMsg = result.data.detail || result.data.error || 'Ошибка при обновлении задачи';
+                notifications.show(errorMsg, 'error');
+                showResult('updateTaskResult', result.data, 'error');
+            }
+        });
+
+        // удаление задачи
+        document.getElementById('deleteTaskForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const taskId = document.getElementById('deleteTaskId').value;
+            const submitButton = e.target.querySelector('button[type="submit"]');
+
+            if (!confirm(`Вы уверены, что хотите удалить задачу #${taskId}?`)) {
+                return;
+            }
+
+            FormUtils.showLoading(submitButton, 'Удаление...');
+            
+            const result = await api.deleteTask(taskId);
+            
+            FormUtils.hideLoading(submitButton);
+            
+            if (result.success) {
+                notifications.show('Задача удалена успешно!', 'success');
+                showResult('deleteTaskResult', result.data, 'success');
+                e.target.reset();
+            } else {
+                const errorMsg = result.data.detail || result.data.error || 'Ошибка при удалении задачи';
+                notifications.show(errorMsg, 'error');
+                showResult('deleteTaskResult', result.data, 'error');
+            }
+        });
+
+        // изменение статуса
+        document.getElementById('patchStatusForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const submitButton = e.target.querySelector('button[type="submit"]');
+            const taskId = formData.get('id');
+            const data = { status: formData.get('status') };
+
+            FormUtils.showLoading(submitButton, 'Изменение...');
+            
+            const result = await api.updateTaskStatus(taskId, data.status);
+            
+            FormUtils.hideLoading(submitButton);
+            
+            if (result.success) {
+                notifications.show('Статус задачи изменен!', 'success');
+                showResult('patchStatusResult', result.data, 'success');
+            } else {
+                const errorMsg = result.data.detail || result.data.error || 'Ошибка при изменении статуса';
+                notifications.show(errorMsg, 'error');
+                showResult('patchStatusResult', result.data, 'error');
+            }
+        });
+
+        // назначение исполнителя
+        document.getElementById('patchAssignForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const submitButton = e.target.querySelector('button[type="submit"]');
+            const taskId = formData.get('id');
+            const data = { assigned_to: formData.get('assigned_to') };
+
+            FormUtils.showLoading(submitButton, 'Назначение...');
+            
+            const result = await api.assignTask(taskId, data.assigned_to);
+            
+            FormUtils.hideLoading(submitButton);
+            
+            if (result.success) {
+                notifications.show('Исполнитель назначен!', 'success');
+                showResult('patchAssignResult', result.data, 'success');
+            } else {
+                const errorMsg = result.data.detail || result.data.error || 'Ошибка при назначении исполнителя';
+                notifications.show(errorMsg, 'error');
+                showResult('patchAssignResult', result.data, 'error');
+            }
+        });
+
+        // загрузка задач
+        async function loadAllTasks() {
+            const button = document.querySelector('button[onclick="loadAllTasks()"]');
+            FormUtils.showLoading(button, 'Загрузка...');
+            
+            const result = await api.getTasks();
+            
+            FormUtils.hideLoading(button);
+            
+            if (result.success) {
+                notifications.show(`Загружено ${result.data.length} задач`, 'success');
+                displayTasksTable(result.data);
+            } else {
+                const errorMsg = result.data.detail || result.data.error || 'Ошибка при загрузке задач';
+                notifications.show(errorMsg, 'error');
+                showResult('allTasksResult', result.data, 'error');
+            }
+        }
+
+        // отображение таблицы
+        function displayTasksTable(tasks) {
+            const container = document.getElementById('allTasksResult');
+            
+            if (tasks.length === 0) {
+                container.innerHTML = '<div class="result">Задачи не найдены</div>';
+                return;
+            }
+
+            let tableHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Название</th>
+                            <th>Описание</th>
+                            <th>Категория</th>
+                            <th>Статус</th>
+                            <th>Приоритет</th>
+                            <th>Создатель</th>
+                            <th>Исполнитель</th>
+                            <th>Создано</th>
+                            <th>Срок</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            tasks.forEach(task => {
+                const priorityColor = {
+                    'Critical': '#dc3545',
+                    'High': '#fd7e14',
+                    'Medium': '#ffc107',
+                    'Low': '#28a745'
+                }[task.priority] || '#6c757d';
+
+                const statusColor = {
+                    'Новая': '#007bff',
+                    'В работе': '#ffc107',
+                    'Выполнена': '#28a745',
+                    'Отменена': '#dc3545'
+                }[task.status] || '#6c757d';
+
+                tableHTML += `
+                    <tr>
+                        <td><strong>#${task.id}</strong></td>
+                        <td>${task.title || 'N/A'}</td>
+                        <td>${task.description ? (task.description.length > 50 ? task.description.substring(0, 50) + '...' : task.description) : 'N/A'}</td>
+                        <td>${task.category || 'N/A'}</td>
+                        <td><span style="color: ${statusColor}; font-weight: bold;">${task.status || 'N/A'}</span></td>
+                        <td><span style="color: ${priorityColor}; font-weight: bold;">${task.priority || 'N/A'}</span></td>
+                        <td>${task.created_by || 'N/A'}</td>
+                        <td>${task.assigned_to || 'Не назначен'}</td>
+                        <td>${FormUtils.formatDate(task.created_at)}</td>
+                        <td>${FormUtils.formatDate(task.due_date)}</td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += '</tbody></table>';
+            container.innerHTML = tableHTML;
+        }
+
+        // показать результат
+        function showResult(elementId, data, type) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `
+                <div class="result ${type}">
+                    <h4>${type === 'success' ? '✅ Успешно!' : '❌ Ошибка'}</h4>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
