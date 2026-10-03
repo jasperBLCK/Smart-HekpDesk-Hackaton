@@ -7,7 +7,7 @@ services:
     environment:
       POSTGRES_DB: HelpDesk
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ansar09595
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     ports:
       - "5432:5432"
 
@@ -17,7 +17,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      DATABASE_URL: postgresql+psycopg2://postgres:ansar09595@db:5432/HelpDesk
+      DATABASE_URL: postgresql+psycopg2://postgres:${POSTGRES_PASSWORD:-postgres}@db:5432/HelpDesk
       JWT_SECRET_KEY: your-secure-secret-key
     depends_on:
       - db
