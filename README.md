@@ -46,7 +46,7 @@ docker-compose up --build
 pip install -r app/requirements.txt
 
 # Создать .env
-DATABASE_URL=postgresql+psycopg2://postgres:***REMOVED***@localhost:5432/HelpDesk
+DATABASE_URL=postgresql+psycopg2://postgres:postgres@localhost:5432/HelpDesk
 JWT_SECRET_KEY=your-secure-secret-key
 
 python -m uvicorn app.main:app --reload
